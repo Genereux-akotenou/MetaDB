@@ -1,0 +1,11 @@
+topic,quota
+QC/Preproc,100
+HostRemoval,80
+Assembly,100
+Binning,100
+TaxonomicProfiling,120
+FunctionalProfiling,120
+MAG_QA,60
+Benchmarks,80
+Formats_Standards,60
+Workflows,100

@@ -1,0 +1,2 @@
+Given the chunk and one QA, verify all claims in the answer are supported by cited spans.
+Return JSON: {is_supported: true/false, offending_claims:[], suggestions:[]}

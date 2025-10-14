@@ -1,0 +1,8 @@
+streamlit
+pandas
+trafilatura
+beautifulsoup4
+lxml
+tiktoken
+jsonschema
+rapidfuzz
