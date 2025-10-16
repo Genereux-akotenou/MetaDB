@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - MetaDB DocQA Platform{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <header class="dashboard-header">
+        <div class="header-left">
+            <h1><i class="fas fa-dna"></i> metagenomics-docqa</h1>
+        </div>
+        <div class="header-right">
+            <span class="user-info">
+                <i class="fas fa-user"></i> <span id="userName">Loading...</span>
+                <!-- <span class="role-badge" id="userRole" title="Loading...">L</span> -->
+                <span class="annotation-count" id="annotationCount" title="Annotations by you">0</span>
+            </span>
+            <button class="btn-light btn-secondary" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </header>
+
+    <main class="dashboard-main">
+        <nav class="dashboard-nav">
+            <button class="nav-btn" onclick="showTab('upload')" id="uploadTab" style="display: none;">
+                <i class="fas fa-upload"></i> Upload & Generate
+            </button>
+            <button class="nav-btn active" onclick="showTab('review')" id="reviewTab">
+                <i class="fas fa-edit"></i> Review QAs
+            </button>
+            <button class="nav-btn" onclick="showTab('ready')" id="readyTab" style="display: none;">
+                <i class="fas fa-check-circle"></i> Ready QAs
+            </button>
+        </nav>
+
+        <div class="dashboard-content">
+            <!-- Upload Tab (Provider only) -->
+            <div id="uploadContent" class="tab-content">
+                <div class="card">
+                    <h2>Upload & Generate QAs</h2>
+                    <p>Upload .jsonl files containing raw document chunks. The system will automatically process them and generate Q&A pairs using AI.</p>
+                    
+                    <div class="upload-instructions">
+                        <h3><i class="fas fa-info-circle"></i> File Format</h3>
+                        <p>Your .jsonl file should contain one JSON object per line with these fields:</p>
+                        <pre><code>{"chunk_id": "unique_id", "source_url": "https://...", "content": "text content..."}</code></pre>
+                    </div>
+                    
+                    <form id="uploadForm" class="upload-form">
+                        <div class="form-group">
+                            <label for="fileInput">Select .jsonl file</label>
+                            <input type="file" id="fileInput" accept=".jsonl,.json" required>
+                            <small>Supported formats: .jsonl, .json</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-magic"></i> Process & Generate QAs
+                        </button>
+                    </form>
+                    
+                    <div id="uploadResult" class="result-box"></div>
+                    
+                    <div class="upload-tips">
+                        <h3><i class="fas fa-lightbulb"></i> Tips</h3>
+                        <ul>
+                            <li>Each chunk should be 200-1000 words for best results</li>
+                            <li>Clean, well-formatted text works better</li>
+                            <li>The system will generate 3 Q&A pairs per chunk</li>
+                            <li>Generated QAs will appear in the Review tab for validation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Tab (All users) -->
+            <div id="reviewContent" class="tab-content">
+                <div class="card">
+                    <h2>
+                        <!-- <i class="fas fa-edit"></i>  -->
+                        Review & Annotate QAs</h2>
+                    <p>Review generated QAs, edit questions/answers, assign scores, and validate.</p>
+                    
+                    <div class="controls">
+                        <button class="btn-light btn-secondary" onclick="loadPendingQAs()">
+                            <i class="fas fa-refresh"></i> Refresh
+                        </button>
+                        <span id="qaCount" class="count-badge">Loading...</span>
+                    </div>
+                    
+                    <div id="qaList" class="qa-list">
+                        <div class="loading">Loading QAs...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ready Tab (Provider only) -->
+            <div id="readyContent" class="tab-content" >
+                <!-- Dashboard Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-list"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="totalQAs">0</div>
+                            <div class="stat-label">Total QAs</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="pendingQAs">0</div>
+                            <div class="stat-label">Pending</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="readyQAs">0</div>
+                            <div class="stat-label">Ready</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="rejectedQAs">0</div>
+                            <div class="stat-label">Rejected</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fas fa-check-circle"></i> Ready QAs</h2>
+                    <p>Approved QAs ready for use in your applications.</p>
+                    
+                    <div class="controls">
+                        <button class="btn-light btn-secondary" onclick="loadReadyQAs()">
+                            <i class="fas fa-refresh"></i> Refresh
+                        </button>
+                        <button class="btn-light btn-success" onclick="exportQAs('json')">
+                            <i class="fas fa-download"></i> Export JSON
+                        </button>
+                        <button class="btn-light btn-success" onclick="exportQAs('csv')">
+                            <i class="fas fa-file-csv"></i> Export CSV
+                        </button>
+                    </div>
+                    
+                    <div id="readyList" class="qa-list">
+                        <div class="loading">Loading ready QAs...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- QA Review Modal -->
+<div id="qaModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Review QA</h3>
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="annotationForm">
+                <input type="hidden" id="qaId">
+                <div class="form-group">
+                    <label for="editQuestion">Question</label>
+                    <textarea id="editQuestion" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editAnswer">Answer</label>
+                    <textarea id="editAnswer" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="score">Score (0.0 - 1.0)</label>
+                    <input type="range" id="score" min="0" max="1" step="0.1" value="0.7">
+                    <span id="scoreValue">0.7</span>
+                </div>
+                <div class="form-group">
+                    <label for="comment">Comment</label>
+                    <textarea id="comment" rows="2" placeholder="Optional feedback..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="validated" checked>
+                        Validate this QA
+                    </label>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Annotation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

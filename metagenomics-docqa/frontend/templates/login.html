@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Login - MetaDB DocQA Platform{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1><i class="fas fa-dna"></i> 
+                <!-- MetaDB DocQA -->
+            </h1>
+            <p>Q.A Collection & Annotation Platform</p>
+        </div>
+        
+        <div class="auth-tabs">
+            <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+            <button class="tab-btn" onclick="switchTab('register')">Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form active">
+            <div class="form-group">
+                <label for="loginEmail">Email</label>
+                <input type="email" id="loginEmail" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" class="auth-form">
+            <div class="form-group">
+                <label for="regEmail">Email</label>
+                <input type="email" id="regEmail" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="regName">Full Name</label>
+                <input type="text" id="regName" name="full_name" required>
+            </div>
+            <div class="form-group">
+                <label for="regPassword">Password</label>
+                <input type="password" id="regPassword" name="password" required minlength="6">
+            </div>
+            <div class="form-group">
+                <label for="regRole">Role</label>
+                <select id="regRole" name="role" required>
+                    <option value="annotator">Data Annotator</option>
+                    <option value="provider">Data Provider (Admin)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Register
+            </button>
+        </form>
+
+        <div id="message" class="message"></div>
+    </div>
+    <br>
+    <p style="text-align: center;color: #fff;">BioinformaticLab - College of computing</p>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+[
+    {
+        "chunk_id": "test1",
+        "source_url": "https://example.com",
+        "content": "This is a test chunk about metagenomics. It contains information about DNA sequencing and microbial analysis."
+    },
+    {
+        "chunk_id": "test2",
+        "source_url": "https://example.com",
+        "content": "Another test chunk about bioinformatics tools used in metagenomics research."
+    }
+]

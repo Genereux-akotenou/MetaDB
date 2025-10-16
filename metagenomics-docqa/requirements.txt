@@ -1,4 +1,3 @@
-streamlit
 pandas
 trafilatura
 beautifulsoup4
@@ -6,3 +5,13 @@ lxml
 tiktoken
 jsonschema
 rapidfuzz
+fastapi
+uvicorn
+sqlalchemy
+passlib[bcrypt]
+argon2-cffi
+python-jose[cryptography]
+httpx
+python-multipart
+email-validator
+jinja2
